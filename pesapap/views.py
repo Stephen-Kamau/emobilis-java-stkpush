@@ -168,13 +168,16 @@ class ViewMpesaRequests(APIView):
 class ViewMpesaPayments(APIView):
     def get(self, request):
         try:
-            payment_res = MpesaPayments.objects.all()
+            # 
+            payment_res = MpesaPayments.objects.all() 
             serial_obj = MpesaPaymentsSerializer(payment_res, many=True)
         except MpesaPayments.DoesNotExist:
             raise Http404("Order not found")
         return Response(serial_obj.data, status=200)
     
 
+
+# simulate the process via web page
 def payvia_webapp(request):
     if request.method == 'POST':
         phone_number = request.POST.get('phone')
@@ -204,3 +207,25 @@ def payvia_webapp(request):
 
     return render(request, 'form.html')
 
+
+
+
+# """
+# CRUD:
+#     - C = Create --> MpesaPayments,objects.create({
+#         "user": 1,
+#         "amount": 1,
+#         "receipt": 1,
+#         "merchant_id": 1,
+#         })
+
+#     - R = Read --> MpesaPayments.objects.all() --get all values in the table
+#                --> MpesaPayments.objects.get(pk=1) --get a single value
+#                --> MpesaPayments.objects.filter(pk=1) --get a value which has same value as filter
+
+#     - U = Update --> MpesaPayments.objects.filter(pk=1).update({})
+
+#     - D = Delete  --> MpesaPayments.objects.filter(pk=1).delete() #for specifig
+#                   --> MpesaPayments.objects.all().delete() #for all
+#                   --> MpesaPayments.objects.get(description__icontains="test").delete() #for specific which has same value
+# """
