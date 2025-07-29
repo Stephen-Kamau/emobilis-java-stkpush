@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         VENV_DIR = 'venv'
+        SONAR_PROJECT_KEY = 'emobilis-java-stkpush' 
     }
 
     stages {
@@ -27,24 +28,34 @@ pipeline {
                 '''
             }
         }
+
         stage('SonarQube Analysis Trail') {
-          steps {
-            script {
-              scannerHome = tool 'SonarQube Scanner'
+            steps {
+                script {
+                    scannerHome = tool 'SonarScanner'
+                }
+                sh 'echo "Scanner home is: ${scannerHome}"'
+                sh 'which sonar-scanner || echo "Global sonar-scanner not in path"'
+                withSonarQubeEnv('SonarScanner') {
+                    sh """
+                       ${scannerHome}/bin/sonar-scanner \
+                       -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                       -Dsonar.sources=. \
+                       -Dsonar.projectBaseDir=${WORKSPACE}
+                    """
+                }
             }
-            sh 'echo "Scanner home is: ${scannerHome}"'
-            sh 'which sonar-scanner || echo "Global sonar-scanner not in path"'
-            withSonarQubeEnv('SonarQube Server') {
-              sh "${scannerHome}/bin/sonar-scanner"
-            }
-          }
         }
 
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarScanner') {
-                    // Prefer one-line with proper shell expansion
-                    sh "${scannerHome}/bin/sonar-scanner"
+                    sh """
+                       ${scannerHome}/bin/sonar-scanner \
+                       -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                       -Dsonar.sources=. \
+                       -Dsonar.projectBaseDir=${WORKSPACE}
+                    """
                 }
             }
         }
@@ -56,10 +67,10 @@ pipeline {
             sh "rm -rf ${VENV_DIR}"
         }
         success {
-            echo '✅ Django tests passed and SonarQube analysis completed.'
+            echo '✅ Tests and SonarQube analysis completed successfully.'
         }
         failure {
-            echo '❌ Something failed — either tests or SonarQube analysis.'
+            echo '❌ Build failed — check errors.'
         }
     }
 }
