@@ -5,6 +5,11 @@ pipeline {
         VENV_DIR = 'venv'
     }
 
+    tools {
+        // Use the exact name defined in Jenkins for SonarQube Scanner
+        sonarScanner 'SonarScanner'
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -27,6 +32,14 @@ pipeline {
                 '''
             }
         }
+
+        stage('SonarQube Analysis') {
+            steps {
+                withSonarQubeEnv('SonarScanner') {
+                    sh 'sonar-scanner'
+                }
+            }
+        }
     }
 
     post {
@@ -35,10 +48,10 @@ pipeline {
             sh "rm -rf ${VENV_DIR}"
         }
         success {
-            echo '✅ Django tests passed.'
+            echo '✅ Django tests passed and SonarQube analysis completed.'
         }
         failure {
-            echo '❌ Django tests failed.'
+            echo '❌ Something failed — either tests or SonarQube analysis.'
         }
     }
 }
