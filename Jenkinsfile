@@ -27,6 +27,18 @@ pipeline {
                 '''
             }
         }
+        stage('SonarQube Analysis Trail') {
+          steps {
+            script {
+              scannerHome = tool 'SonarQube Scanner'
+            }
+            sh 'echo "Scanner home is: ${scannerHome}"'
+            sh 'which sonar-scanner || echo "Global sonar-scanner not in path"'
+            withSonarQubeEnv('SonarQube Server') {
+              sh "${scannerHome}/bin/sonar-scanner"
+            }
+          }
+        }
 
         stage('SonarQube Analysis') {
             steps {
