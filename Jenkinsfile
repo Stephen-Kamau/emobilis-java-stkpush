@@ -40,6 +40,7 @@ pipeline {
                     sh """
                        ${scannerHome}/bin/sonar-scanner \
                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                       -Dsonar.login=sqp_9c6e47b64a390bc237cc33970db5650dee7d5ff1 \
                        -Dsonar.sources=. \
                        -Dsonar.projectBaseDir=${WORKSPACE}
                     """
@@ -53,6 +54,7 @@ pipeline {
                     sh """
                        ${scannerHome}/bin/sonar-scanner \
                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                       -Dsonar.login=sqp_9c6e47b64a390bc237cc33970db5650dee7d5ff1 \
                        -Dsonar.sources=. \
                        -Dsonar.projectBaseDir=${WORKSPACE}
                     """
