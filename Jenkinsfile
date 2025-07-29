@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         VENV_DIR = 'venv'
-        PIP_CACHE_DIR = "${HOME}/.cache/pip"
     }
 
     stages {
@@ -16,10 +15,6 @@ pipeline {
         stage('Setup Python Env') {
             steps {
                 sh '''
-                    python3 -m venv ${VENV_DIR}
-                    . ${VENV_DIR}/bin/activate
-                    # pip install --upgrade pip
-                    # pip install -r requirements.txt
                     echo "Skipping pip install for now – we'll add this later."
                 '''
             }
@@ -28,8 +23,6 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                    # . ${VENV_DIR}/bin/activate
-                    # python manage.py test --verbosity=2
                     echo "Skipping Tests for now – we'll add this later."
                 '''
             }
